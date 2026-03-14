@@ -55,7 +55,7 @@ echo "[UrT] Using binary: ${SERVER_BIN}"
 : "${URT_PORT:=27960}"
 : "${URT_MAX_RATE:=50000}"            # generous for modern broadband
 : "${URT_MIN_RATE:=8000}"
-: "${URT_MAX_PING:=250}"              # kick players above this ping
+: "${URT_MAX_PING:=0}"                # 0 = no ping limit; set e.g. 300 to kick high pingers
 : "${URT_MIN_PING:=0}"
 : "${URT_FPS:=40}"                    # server-side fps (higher = smoother hits)
 : "${URT_SNAPS:=20}"
@@ -95,6 +95,10 @@ echo "[UrT] Using binary: ${SERVER_BIN}"
 : "${URT_PURE:=1}"                    # enforce pure server (no custom pk3 hacks)
 : "${URT_FLOOD_PROTECT:=1}"
 : "${URT_ANTICHEAT:=0}"               # 1 requires UrT cheat-check support
+
+# Client auto-download
+: "${URT_ALLOW_DOWNLOAD:=1}"          # 1 = clients auto-download missing pk3s
+: "${URT_DL_URL:=}"                   # optional redirect URL (HTTP) for faster downloads
 
 # Map settings
 : "${URT_MAP_VOTE_DELAY:=5}"          # seconds between map vote calls
@@ -168,7 +172,13 @@ set g_mapvotedelay      ${URT_MAP_VOTE_DELAY}
 set sv_pure             ${URT_PURE}
 set g_floodprotection   ${URT_FLOOD_PROTECT}
 set sv_anticheat        ${URT_ANTICHEAT}
-set sv_allowdownload    0
+
+// ── Client Auto-download ──────────────────────────────────────────────────────
+// sv_allowdownload 1 = clients fetch missing pk3s directly from this server.
+// Set sv_dlURL to an HTTP URL to redirect downloads there instead (much faster;
+// avoids choking the game port with file transfers during active play).
+set sv_allowdownload    ${URT_ALLOW_DOWNLOAD}
+set sv_dlURL            "${URT_DL_URL}"
 
 // ── Logging ──────────────────────────────────────────────────────────────────
 set g_log               "games.log"
