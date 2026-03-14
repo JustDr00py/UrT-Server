@@ -91,5 +91,4 @@ Edit `config/maprotation.cfg` and the container picks it up immediately (it's a 
 - **sv_fps 40** — double the default (20); reduces lag compensation errors
 - **sv_maxrate 50000** — allows full-bandwidth clients to stop choppy movement
 - **g_smoothClients 1** — interpolates movement between server frames
-- **UDP socket buffers** raised via `sysctls` in compose for burst packet handling
 - **tini** as PID 1 ensures clean SIGTERM → graceful shutdown

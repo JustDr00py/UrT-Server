@@ -23,11 +23,6 @@ services:
       # Hot-reload map rotation without rebuilding the image
       - ./config/maprotation.cfg:/opt/urtserver/data/q3ut4/maprotation.cfg:ro
 
-    # Raise the default UDP socket buffer so all 16 clients get timely packets
-    sysctls:
-      net.core.rmem_max: 4194304
-      net.core.wmem_max: 4194304
-
     # UrT server is not memory-heavy; cap keeps the host healthy
     deploy:
       resources:
