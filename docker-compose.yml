@@ -1,0 +1,56 @@
+services:
+  urt-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: urt-server
+    restart: unless-stopped
+
+    # Load all settings from .env
+    env_file: .env
+
+    ports:
+      # UDP only – UrT does not use TCP
+      - "${URT_PORT:-27960}:${URT_PORT:-27960}/udp"
+
+    volumes:
+      # Game files (read-only) – place your UrT 4.3 server files here
+      - ./urt-game:/opt/urtserver/game:ro
+
+      # Writable data: generated configs, logs, downloaded content
+      - urt-data:/opt/urtserver/data
+
+      # Hot-reload map rotation without rebuilding the image
+      - ./config/maprotation.cfg:/opt/urtserver/data/q3ut4/maprotation.cfg:ro
+
+    # Raise the default UDP socket buffer so all 16 clients get timely packets
+    sysctls:
+      net.core.rmem_max: 4194304
+      net.core.wmem_max: 4194304
+
+    # UrT server is not memory-heavy; cap keeps the host healthy
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 128M
+
+    # Capture logs with timestamps
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    healthcheck:
+      # UDP-based health: server echoes to a status query on its port
+      test: ["CMD-SHELL", "echo -n '\\xff\\xff\\xff\\xffgetstatus' | nc -u -w2 127.0.0.1 ${URT_PORT:-27960} | grep -q 'sv_maxclients' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  urt-data:
+    driver: local

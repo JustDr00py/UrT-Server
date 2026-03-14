@@ -1,0 +1,11 @@
+# Don't send game files into build context (they're mounted at runtime)
+urt-game/
+
+# Runtime data
+urt-data/
+
+# Scripts not needed in image
+scripts/
+
+# Docs
+*.md
