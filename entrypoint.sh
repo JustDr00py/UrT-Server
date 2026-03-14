@@ -133,7 +133,6 @@ set sv_maxrate          ${URT_MAX_RATE}
 set sv_minrate          ${URT_MIN_RATE}
 set sv_maxping          ${URT_MAX_PING}
 set sv_minping          ${URT_MIN_PING}
-set rate                25000
 
 // ── Player Limits ────────────────────────────────────────────────────────────
 set sv_maxclients       ${URT_MAX_CLIENTS}
