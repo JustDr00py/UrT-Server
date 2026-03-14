@@ -9,9 +9,11 @@ services:
     # Load all settings from .env
     env_file: .env
 
-    ports:
-      # UDP only – UrT does not use TCP
-      - "${URT_PORT:-27960}:${URT_PORT:-27960}/udp"
+    # host network: container shares the host's network stack directly.
+    # Eliminates Docker NAT/iptables overhead on every UDP packet — critical
+    # for a game server where jitter shows up as ping spikes.
+    # The ports: mapping is not used in host mode (server binds directly to host port).
+    network_mode: host
 
     volumes:
       # Game files (read-only) – place your UrT 4.3 server files here
