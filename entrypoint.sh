@@ -177,7 +177,7 @@ set sv_anticheat        ${URT_ANTICHEAT}
 // Set sv_dlURL to an HTTP URL to redirect downloads there instead (much faster;
 // avoids choking the game port with file transfers during active play).
 set sv_allowdownload    ${URT_ALLOW_DOWNLOAD}
-set sv_dlURL            "${URT_DL_URL}"
+$([ -n "${URT_DL_URL}" ] && echo "set sv_dlURL            \"${URT_DL_URL}\"")
 
 // ── Logging ──────────────────────────────────────────────────────────────────
 set g_log               "games.log"
@@ -201,9 +201,10 @@ echo "[UrT] Starting Urban Terror dedicated server on port ${URT_PORT}..."
 echo "[UrT] Game type: ${URT_GAMETYPE} | Max clients: ${URT_MAX_CLIENTS} | FPS: ${URT_FPS}"
 
 exec "${SERVER_BIN}" \
-    +set fs_basepath  "${GAME_DIR}" \
-    +set fs_homepath  "${DATA_DIR}" \
-    +set dedicated    "${URT_PUBLIC}" \
-    +set net_port     "${URT_PORT}" \
-    +exec             server.cfg \
-    +map              ut4_algiers
+    +set fs_basepath        "${GAME_DIR}" \
+    +set fs_homepath        "${DATA_DIR}" \
+    +set dedicated          "${URT_PUBLIC}" \
+    +set net_port           "${URT_PORT}" \
+    +exec                   server.cfg \
+    +set sv_allowdownload   "${URT_ALLOW_DOWNLOAD}" \
+    +map                    ut4_algiers
