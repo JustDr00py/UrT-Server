@@ -80,6 +80,7 @@ echo "[UrT] Using binary: ${SERVER_BIN}"
 : "${URT_STAMINA:=0}"                 # 0=unlimited sprint
 : "${URT_RESPAWN_PROTECTION:=0}"      # seconds of spawn protection
 : "${URT_SMOOTH_CLIENTS:=1}"          # interpolation for smoother movement
+: "${URT_FALL_DAMAGE:=0}"             # 0=no fall damage 1=enabled
 
 # Warmup
 : "${URT_DO_WARMUP:=1}"
@@ -156,6 +157,7 @@ set g_jumpvelocity      ${URT_JUMP_VELOCITY}
 set g_stamina           ${URT_STAMINA}
 set g_respawnprotection ${URT_RESPAWN_PROTECTION}
 set g_smoothClients     ${URT_SMOOTH_CLIENTS}
+set g_falldamage        ${URT_FALL_DAMAGE}
 
 // ── Warmup ───────────────────────────────────────────────────────────────────
 set g_doWarmup          ${URT_DO_WARMUP}
@@ -219,6 +221,15 @@ for mapname in ${ROTATION_MAPS} ${URT_EXTRA_MAPS}; do
 done
 
 echo "[UrT] Mapconfigs written to ${MAPCFG_DIR}/"
+
+# ── Patch q3config.cfg ────────────────────────────────────────────────────────
+# The engine persists seta sv_allowdownload "0" in q3config.cfg from a previous
+# install. Patch it now so the engine never reads the stale 0 value.
+Q3CFG="${CONFIG_DIR}/q3config.cfg"
+if [[ -f "${Q3CFG}" ]]; then
+    sed -i 's/seta sv_allowdownload "0"/seta sv_allowdownload "1"/' "${Q3CFG}"
+    echo "[UrT] Patched sv_allowdownload in q3config.cfg"
+fi
 
 # ── Launch server ─────────────────────────────────────────────────────────────
 echo "[UrT] Starting Urban Terror dedicated server on port ${URT_PORT}..."
