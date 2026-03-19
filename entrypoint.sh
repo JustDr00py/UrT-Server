@@ -99,6 +99,7 @@ echo "[UrT] Using binary: ${SERVER_BIN}"
 # Client auto-download
 : "${URT_ALLOW_DOWNLOAD:=1}"          # 1 = clients auto-download missing pk3s
 : "${URT_DL_URL:=}"                   # optional redirect URL (HTTP) for faster downloads
+: "${URT_EXTRA_MAPS:=}"               # space-separated extra maps to generate mapconfigs for
 
 # Map settings
 : "${URT_MAP_VOTE_DELAY:=5}"          # seconds between map vote calls
@@ -176,8 +177,11 @@ set sv_anticheat        ${URT_ANTICHEAT}
 // sv_allowdownload 1 = clients fetch missing pk3s directly from this server.
 // Set sv_dlURL to an HTTP URL to redirect downloads there instead (much faster;
 // avoids choking the game port with file transfers during active play).
+// g_mapConfigs re-applies sv_allowdownload after every map load (the game
+// module resets it to 0 on each SV_SpawnServer call).
 set sv_allowdownload    ${URT_ALLOW_DOWNLOAD}
 $([ -n "${URT_DL_URL}" ] && echo "set sv_dlURL            \"${URT_DL_URL}\"")
+set g_mapConfigs        "mapconfigs"
 
 // ── Logging ──────────────────────────────────────────────────────────────────
 set g_log               "games.log"
@@ -195,6 +199,26 @@ exec maprotation.cfg
 EOF
 
 echo "[UrT] Configuration written to ${SERVER_CFG}"
+
+# ── Generate per-map configs (g_mapConfigs) ───────────────────────────────────
+# UrT's game module resets sv_allowdownload on every map load via G_InitGame.
+# g_mapConfigs makes UrT exec mapconfigs/<mapname>.cfg after each map loads,
+# restoring sv_allowdownload to the configured value.
+MAPCFG_DIR="${CONFIG_DIR}/mapconfigs"
+mkdir -p "${MAPCFG_DIR}"
+
+# Collect map names from the rotation file + any extras listed in URT_EXTRA_MAPS
+ROTATION_MAPS=""
+if [[ -f "${CONFIG_DIR}/maprotation.cfg" ]]; then
+    ROTATION_MAPS=$(grep -oP '(?<=map )\w+' "${CONFIG_DIR}/maprotation.cfg" 2>/dev/null || true)
+fi
+
+for mapname in ${ROTATION_MAPS} ${URT_EXTRA_MAPS}; do
+    [[ -z "${mapname}" ]] && continue
+    echo "set sv_allowdownload ${URT_ALLOW_DOWNLOAD}" > "${MAPCFG_DIR}/${mapname}.cfg"
+done
+
+echo "[UrT] Mapconfigs written to ${MAPCFG_DIR}/"
 
 # ── Launch server ─────────────────────────────────────────────────────────────
 echo "[UrT] Starting Urban Terror dedicated server on port ${URT_PORT}..."
