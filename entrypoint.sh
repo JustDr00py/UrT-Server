@@ -242,4 +242,4 @@ exec "${SERVER_BIN}" \
     +set net_port           "${URT_PORT}" \
     +exec                   server.cfg \
     +set sv_allowdownload   "${URT_ALLOW_DOWNLOAD}" \
-    +map                    ut4_algiers
+    +vstr                   d1
