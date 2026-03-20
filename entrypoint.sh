@@ -73,6 +73,7 @@ echo "[UrT] Using binary: ${SERVER_BIN}"
 : "${URT_OVERTIME:=1}"                # allow overtime
 : "${URT_FRIENDLY_FIRE:=1}"           # 0=off 1=half 2=full 3=reflect
 : "${URT_TEAM_BALANCE:=1}"            # auto rebalance
+: "${URT_TEAM_SPEC_LOCK:=1}"         # 1 = players can only spectate their own team
 : "${URT_GEAR:=0}"                    # 0 = all weapons; use bitmask to restrict
 : "${URT_GRAVITY:=800}"
 : "${URT_SPEED:=320}"
@@ -150,6 +151,7 @@ set capturelimit        ${URT_CAPTURELIMIT}
 set g_overtime          ${URT_OVERTIME}
 set g_friendlyfire      ${URT_FRIENDLY_FIRE}
 set g_teambalance       ${URT_TEAM_BALANCE}
+set g_teamspeclock      ${URT_TEAM_SPEC_LOCK}
 set g_gear              ${URT_GEAR}
 set g_gravity           ${URT_GRAVITY}
 set g_speed             ${URT_SPEED}
