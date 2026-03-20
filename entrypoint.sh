@@ -151,7 +151,7 @@ set capturelimit        ${URT_CAPTURELIMIT}
 set g_overtime          ${URT_OVERTIME}
 set g_friendlyfire      ${URT_FRIENDLY_FIRE}
 set g_teambalance       ${URT_TEAM_BALANCE}
-set g_teamspeclock      ${URT_TEAM_SPEC_LOCK}
+set g_followstrict      ${URT_TEAM_SPEC_LOCK}
 set g_gear              ${URT_GEAR}
 set g_gravity           ${URT_GRAVITY}
 set g_speed             ${URT_SPEED}
